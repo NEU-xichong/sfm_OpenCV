@@ -24,7 +24,7 @@ namespace FeatureGraph
 
     } tempPair;
 
-    cv::Mat Image::Img::imgRead(const std::string &path) {
+    cv::Mat Img::imgRead(const std::string &path) {
 
         std::string str4=path.substr(path.size()-4);
         std::string str5=path.substr(path.size()-5);
@@ -63,7 +63,7 @@ namespace FeatureGraph
         {
             std::cout<<"image: "<<count<<'\n'<<"imgDir: "<<imgPath.path().string()<<std::endl;
 
-            ImgVec.push_back(Image::Img(imgPath.path().string(),count));
+            ImgVec.push_back(Img(imgPath.path().string(),count));
 
             ImgVec[count].img_=ImgVec[count].imgRead(imgPath.path().string());
 

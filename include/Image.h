@@ -25,35 +25,38 @@ namespace FeatureGraph
 {
 
 
+struct Img
+    {
+    Img()= default;
+    Img(const std::string & path,int id):path_(path),id_(id){};
+    cv::Mat imgRead(const std::string & path);
+    int id_;
+    std::string path_;
+    cv::Mat img_;
+    std::vector<cv::KeyPoint> keyPoints;
+    cv::Mat descriptor;
+};
+
+
+
+struct pairImg{
+
+     int imgId1;
+     int imgId2;
+     std::vector<cv::DMatch> matches;
+     cv::Mat F;
+     bool operator==(const struct pairImg &rhs)
+     {
+         return ((imgId1==rhs.imgId1)&&(imgId2==rhs.imgId2))||((imgId2==rhs.imgId1)&&(imgId1==rhs.imgId2));
+     }
+};
 
 class Image{
+
 
 public:
 
 
-    struct Img
-    {
-        Img()= default;
-        Img(const std::string & path,int id):path_(path),id_(id){};
-        cv::Mat imgRead(const std::string & path);
-        int id_;
-        std::string path_;
-        cv::Mat img_;
-        std::vector<cv::KeyPoint> keyPoints;
-        cv::Mat descriptor;
-    };
-
-    struct pairImg{
-
-        int imgId1;
-        int imgId2;
-        std::vector<cv::DMatch> matches;
-        cv::Mat F;
-        bool operator==(struct pairImg &rhs)
-        {
-            return ((imgId1==rhs.imgId1)&&(imgId2==rhs.imgId2))||((imgId2==rhs.imgId1)&&(imgId1==rhs.imgId2));
-        }
-    };
 
     // void imgRead (const std::string &path);
 

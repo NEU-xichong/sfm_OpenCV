@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 14)
 #Opencv
 find_package(OpenCV 3.3 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories("/usr/include/eigen3")
 
 #DBoW
 set( DBoW3_INCLUDE_DIRS "/usr/local/include" )
@@ -19,6 +20,8 @@ add_library(${PROJECT_NAME} SHARED
         src/FeatureExtraction.cpp
         src/FeatureMatching.cpp
         src/Image.cpp
+        src/tracks.cpp
+        src/init_pair.cpp
         )
 
 
