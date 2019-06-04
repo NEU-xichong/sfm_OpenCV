@@ -20,29 +20,66 @@ namespace FeatureGraph
 
     }
 
-    bool FeatureMatching::geometric_verif_F(const std::vector<cv::Point2f> &pts1,
-                                            const std::vector<cv::Point2f> &pts2,
-                                            const std::vector<cv::DMatch> matches,
-                                            std::vector<cv::DMatch>&good_matches,
-                                            cv::Mat &Fundamental) {
+    bool FeatureMatching::geometric_verif_F_H(const std::vector<cv::Point2f> &pts1,
+                                              const std::vector<cv::Point2f> &pts2,
+                                              const std::vector<cv::DMatch> matches,
+                                              std::vector<cv::DMatch>&good_matches,
+                                              H_F &H_F_CHOOSE,
+                                              cv::Mat &Fundamental,
+                                              cv::Mat &Homography) {
 
         //cv::Mat Fundamental;
-        cv::Mat inlier_mask;
-        Fundamental=cv::findFundamentalMat(pts1,pts2,cv::FM_RANSAC,3.0,0.99,inlier_mask);
-        if(!Fundamental.empty())
-        {
-            for(int i=0;i<inlier_mask.rows;i++)
-            {
-                if(inlier_mask.at<uchar>(i,0)==0)continue;
+        cv::Mat inlier_mask_F;
+        cv::Mat inlier_mask_H;
+        std::vector<cv::DMatch> matches_F;
+        std::vector<cv::DMatch> matches_H;
+        Fundamental=cv::findFundamentalMat(pts1,pts2,cv::FM_RANSAC,4.0,0.99,inlier_mask_F);
+        Homography=cv::findHomography(pts1,pts2,cv::FM_RANSAC,12.0,inlier_mask_H,10000,0.99);
 
-                good_matches.push_back(matches[i]);
-            }
-            if(good_matches.size()>15)
-            {
-                return true;
-            }
+
+        assert(inlier_mask_F.type()==CV_8U);
+        assert(inlier_mask_H.type()==CV_8U);
+
+
+        size_t num_inlier_F=0;
+        for(int i=0;i<inlier_mask_F.rows;i++)
+        {
+            if(inlier_mask_F.at<uchar>(i,0)==0)continue;
+            matches_F.push_back(matches[i]);
+            num_inlier_F++;
         }
-        return false;
+
+        size_t num_inlier_H=0;
+        for (int j = 0; j <inlier_mask_H.rows ; ++j) {
+
+            if(inlier_mask_H.at<uchar>(j,0)==0)continue;
+            matches_H.push_back(matches[j]);
+            num_inlier_H++;
+
+        }
+
+        double H_F_ratio= static_cast<double>(num_inlier_H)/ static_cast<double >(num_inlier_F);
+
+        //TODO:这个20没有经过实验测试，不一定可靠
+        if(H_F_ratio<0.7&&num_inlier_F>=20)
+        {
+            H_F_CHOOSE=H_F::FundanmentalChoose;
+            good_matches=matches_F;
+            return true;
+
+        }
+        else if(H_F_ratio>=0.7&&num_inlier_H>=20)
+        {
+            H_F_CHOOSE=H_F::HomographyChoose;
+            good_matches=matches_H;
+            return true;
+        }
+        else
+        {
+            return false;
+
+        }
+
     }
 
     void CrossMatches(cv::Mat desc1,cv::Mat desc2,std::vector<cv::DMatch> matches,double distanceRatio, double maxDis)

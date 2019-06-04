@@ -21,7 +21,9 @@ add_library(${PROJECT_NAME} SHARED
         src/FeatureMatching.cpp
         src/Image.cpp
         src/tracks.cpp
-        src/init_pair.cpp
+        src/init.cpp
+        src/Camera.cpp
+        src/common.cpp
         )
 
 

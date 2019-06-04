@@ -13,63 +13,63 @@
 namespace FeatureGraph{
 
 
-struct View
-{
-    View(int imgId,cv::Mat Image,std::vector<cv::KeyPoint> kpts):ImgId(imgId),img(Image),keyPoitsTrack(kpts){};
+    struct View
+    {
+        View(int imgId,cv::Mat Image,std::vector<cv::KeyPoint> kpts):ImgId(imgId),img(Image),keyPoitsTrack(kpts){};
 
-    int ImgId;
+        int ImgId;
 
-    cv::Mat img;
+        cv::Mat img;
 
-    //keyPoint对应了class_id;
-    std::vector<cv::KeyPoint> keyPoitsTrack;
-};
+        //keyPoint对应了class_id;
+        std::vector<cv::KeyPoint> keyPoitsTrack;
+    };
 
-typedef std::vector<View> ViewList;
-
-
-struct FeatureIdOfView{
-
-    FeatureIdOfView(int view_id,int feature_id):view_id_(view_id),feature_id_(feature_id){};
-
-    int view_id_;
-
-    int feature_id_;
-
-};
-
-typedef std::vector<FeatureIdOfView> FeatureIdOfViewList;
+    typedef std::vector<View> ViewList;
 
 
-struct Track{
+    struct FeatureIdOfView{
 
-    //每条track对应的世界坐标点
-    Eigen::Vector3f pos;
+        FeatureIdOfView(int view_id,int feature_id):view_id_(view_id),feature_id_(feature_id){};
 
-    //每条tack对应世界坐标点的颜色
-    Eigen::Vector3i color;
+        int view_id_;
 
-    //没每条track包含的图像和图像上对应的特征点
-    FeatureIdOfViewList featureTrack;
+        int feature_id_;
 
-};
+    };
 
-typedef std::vector<Track> TrackList;
+    typedef std::vector<FeatureIdOfView> FeatureIdOfViewList;
 
 
-class tracks{
+    struct Track{
 
-public:
+        //每条track对应的世界坐标点
+        Eigen::Vector3f pos;
 
-    tracks()= default;
+        //每条tack对应世界坐标点的颜色
+        Eigen::Vector3i color;
 
-    void computeTracks(const std::vector<pairImg> matching,ViewList Views,TrackList &pointTracks);
+        //没每条track包含的图像和图像上对应的特征点
+        FeatureIdOfViewList featureTrack;
 
-    void unify_track(const int view1_track_id,const int view2_track_id,TrackList & trackAll,ViewList &viewports);
+    };
 
-    void invalid_track_remove(ViewList Views,TrackList &pointTracks);
+    typedef std::vector<Track> TrackList;
 
-};
+
+    class tracks{
+
+    public:
+
+        tracks()= default;
+
+        void computeTracks(const std::vector<pairImg> matching,ViewList &Views,TrackList &pointTracks);
+
+        void unify_track(int view1_track_id,int view2_track_id,TrackList & trackAll,ViewList &viewports);
+
+        void invalid_track_remove(ViewList Views,TrackList &pointTracks);
+
+    };
 
 
 }

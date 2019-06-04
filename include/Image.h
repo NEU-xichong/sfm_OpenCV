@@ -17,6 +17,8 @@
 
 #include "../include/FeatureExtraction.h"
 #include "../include/FeatureMatching.h"
+#include "../include/common.h"
+#include "../include/Camera.h"
 using namespace boost::filesystem;
 
 
@@ -43,8 +45,19 @@ struct pairImg{
 
      int imgId1;
      int imgId2;
+
+     std::vector<cv::Point2f> points2f1;
+     std::vector<cv::Point2f> points2f2;
+
      std::vector<cv::DMatch> matches;
+
+     //TODO：这个应该放在初始化里，好理解些
+     //void computeE(std::vector<Camera> &Cam ,const Parameter &parameter=Parameter::Unified);
+     H_F choose;
+
      cv::Mat F;
+     cv::Mat E;
+     cv::Mat H;
      bool operator==(const struct pairImg &rhs)
      {
          return ((imgId1==rhs.imgId1)&&(imgId2==rhs.imgId2))||((imgId2==rhs.imgId1)&&(imgId1==rhs.imgId2));

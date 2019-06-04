@@ -46,6 +46,22 @@ namespace FeatureGraph
         return img;
     }
 
+    //TODO::这个应该放在init里
+    /*
+    void pairImg::computeE( std::vector <Camera> &Cam, const Parameter &parameter) {
+
+
+        Camera &camera1=Cam[imgId1];
+
+        Camera &camera2=Cam[imgId2];
+
+        if(parameter==Parameter::Unified)
+        {
+
+
+        }
+    }
+    */
     int Image::loadImg(const std::string &imgPath) {
 
         path dirPath(imgPath);
@@ -187,7 +203,7 @@ namespace FeatureGraph
                 }
                 imgTempPairMap[i].push_back(imgTempPair);
             }
-
+            //将单应矩阵的内点比率排序，内点比率越小，越优先考虑
             std::sort(imgTempPairMap[i].begin(),imgTempPairMap[i].end());
 
 
@@ -199,6 +215,8 @@ namespace FeatureGraph
 
                 int idF=imgTempPairMap[i][k].idImg;
                 cv::Mat F;
+                cv::Mat H;
+                H_F h_f;
                 bool isSatisfyF= false;
                 std::vector<cv::DMatch> finalMatch;
 
@@ -208,13 +226,21 @@ namespace FeatureGraph
                     points2.push_back(ImgVec[idF].keyPoints[imgTempPairMap[i][k].tempMatches[x].trainIdx].pt);
                 }
 
-                isSatisfyF=featureMatch->geometric_verif_F(points1,points2,imgTempPairMap[i][k].tempMatches,finalMatch,F);
+                isSatisfyF=featureMatch->geometric_verif_F_H(points1,points2,imgTempPairMap[i][k].tempMatches,finalMatch,h_f,F,H);
                 if(isSatisfyF== true)
                 {
                     pairImage.imgId1=i;
                     pairImage.imgId2=idF;
                     pairImage.F=F;
+                    pairImage.H=H;
+                    pairImage.choose=h_f;
                     pairImage.matches=finalMatch;
+
+                    for(size_t s=0;s<finalMatch.size();++s)
+                    {
+                        pairImage.points2f1.push_back(ImgVec[i].keyPoints[finalMatch[s].queryIdx].pt);
+                        pairImage.points2f2.push_back(ImgVec[idF].keyPoints[finalMatch[s].trainIdx].pt);
+                    }
 
                     if(std::count(pairVec.begin(),pairVec.end(),pairImage)==0)
                     {

@@ -6,6 +6,7 @@
 #define FEATUREMATCH_FEATUREMATCHING_H
 
 #include <opencv2/opencv.hpp>
+#include "../include/common.h"
 
 namespace FeatureGraph
 {
@@ -18,13 +19,32 @@ public:
 
 
 
+    /**
+     * @brief 进行了交叉匹配验证
+     * @param desc1
+     * @param desc2
+     * @param good_matches
+     */
     void matchFeatures(cv::Mat & desc1,cv::Mat & desc2,std::vector<cv::DMatch> & good_matches);
 
-    bool geometric_verif_F(const std::vector<cv::Point2f>& pts1,
+    /**
+     *
+     * @param pts1
+     * @param pts2
+     * @param matches
+     * @param good_matches 满足内点的匹配关系
+     * @param H_F_CHOOSE   枚举类型，判断该匹配对是满足单应矩阵还是基础矩阵（计算两种矩阵，判断内点的比例）
+     * @param Fundamental  基础矩阵
+     * @param Homography   单应矩阵
+     * @return
+     */
+    bool geometric_verif_F_H(const std::vector<cv::Point2f>& pts1,
             const std::vector<cv::Point2f>& pts2,
             const std::vector<cv::DMatch> matches,
             std::vector<cv::DMatch> &good_matches,
-            cv::Mat & Fundamental);
+            H_F &H_F_CHOOSE,
+            cv::Mat &Fundamental,
+            cv::Mat &Homography);
 
 private:
 

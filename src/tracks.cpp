@@ -8,7 +8,7 @@ namespace FeatureGraph
 
 void delete_track_clean(std::vector<bool> &delete_track,TrackList &track);
 
-void tracks::unify_track(const int view1_track_id, const int view2_track_id, FeatureGraph::TrackList &trackAll,
+void tracks::unify_track(int view1_track_id,int view2_track_id, FeatureGraph::TrackList &trackAll,
                          FeatureGraph::ViewList &viewports) {
 
     //将track特征数量少的，融合到track特征数量多的
@@ -39,7 +39,7 @@ void tracks::unify_track(const int view1_track_id, const int view2_track_id, Fea
 }
 
 
-void tracks::computeTracks(const std::vector<FeatureGraph::pairImg> matching, FeatureGraph::ViewList Views,
+void tracks::computeTracks(const std::vector<FeatureGraph::pairImg> matching, FeatureGraph::ViewList &Views,
                            FeatureGraph::TrackList &pointTracks) {
 
 
@@ -155,6 +155,27 @@ void tracks::invalid_track_remove(FeatureGraph::ViewList Views, FeatureGraph::Tr
 
     //pointTrack中删除已经去除掉的track
     delete_track_clean(delete_tracks,pointTracks);
+
+    for(size_t i=0;i<pointTracks.size();++i)
+    {
+        Track & trackColor=pointTracks[i];
+        int numFeature=0;
+        Eigen::Vector3i color(0,0,0);
+        for(int j=0;j<trackColor.featureTrack.size();++j)
+        {
+            FeatureIdOfViewList &ref=trackColor.featureTrack;
+
+            View viewColor=Views[ref[j].view_id_];
+
+            int row=viewColor.keyPoitsTrack[ref[j].feature_id_].pt.y;
+            int col=viewColor.keyPoitsTrack[ref[j].feature_id_].pt.x;
+
+            //TODO:这一部分的类型可能存在问题！！！！！
+            color+=Eigen::Vector3i(viewColor.img.at<cv::Vec3b>(row,col)[0],viewColor.img.at<cv::Vec3b>(row,col)[1],viewColor.img.at<cv::Vec3b>(row,col)[2]);
+            numFeature++;
+        }
+        trackColor.color= static_cast<Eigen::Vector3i>(color/numFeature);
+    }
 
 }
 
