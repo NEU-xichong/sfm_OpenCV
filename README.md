@@ -1,5 +1,4 @@
 # sfm_OpenCV
-===========
 利用opencv实现SFM，同时采用词典树，提高匹配效率
 References
 ----------
