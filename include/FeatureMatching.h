@@ -6,7 +6,7 @@
 #define FEATUREMATCH_FEATUREMATCHING_H
 
 #include <opencv2/opencv.hpp>
-#include "../include/common.h"
+#include "common.h"
 
 namespace FeatureGraph
 {

@@ -56,6 +56,9 @@ int main(int argc ,char**argv)
             Ptr<cv::xfeatures2d::SIFT> ptr=cv::xfeatures2d::SIFT::create();
             vector<KeyPoint> temp_kpts;
             ptr->detect(img,temp_kpts);
+
+            cout<<temp_kpts.size()<<endl;
+
             ptr->compute(img,temp_kpts,decs);
 
             descriptors.push_back(decs);
@@ -68,7 +71,7 @@ int main(int argc ,char**argv)
     cout<<"creating vocabulary..."<<endl;
     //const WeightingType weight = TF_IDF;
    // const ScoringType score = L1_NORM;
-    DBoW3::Vocabulary vocab(10,7);
+  /*  DBoW3::Vocabulary vocab(10,6);
 
     vocab.create(descriptors);
 
@@ -76,7 +79,7 @@ int main(int argc ,char**argv)
 
     vocab.save("vocabulary.yml.gz");
 
-    cout<<"vocabulary done!"<<endl;
+    cout<<"vocabulary done!"<<endl;*/
     return 0;
 }
 

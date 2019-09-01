@@ -7,7 +7,7 @@
 
 
 #include <opencv2/opencv.hpp>
-#include "../include/Image.h"
+#include "Image.h"
 
 
 namespace FeatureGraph

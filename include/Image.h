@@ -15,10 +15,10 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/filesystem.hpp>
 
-#include "../include/FeatureExtraction.h"
-#include "../include/FeatureMatching.h"
-#include "../include/common.h"
-#include "../include/Camera.h"
+#include "FeatureExtraction.h"
+#include "FeatureMatching.h"
+#include "common.h"
+#include "Camera.h"
 using namespace boost::filesystem;
 
 
@@ -28,7 +28,7 @@ namespace FeatureGraph
 
 
 struct Img
-    {
+{
     Img()= default;
     Img(const std::string & path,int id):path_(path),id_(id){};
     cv::Mat imgRead(const std::string & path);
@@ -70,7 +70,6 @@ class Image{
 public:
 
 
-
     // void imgRead (const std::string &path);
 
     Image(const cv::Ptr<FeatureExtraction> Extr = cv::Ptr<FeatureExtraction>(new FeatureExtraction()),
@@ -88,7 +87,6 @@ public:
     cv::Mat GetDesById(const int id) const;
 
     int createVocabSim(const std::string &vocabPath,
-                       const std::vector<Img> imgVec,
                        const size_t numSim
             );
 

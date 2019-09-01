@@ -1,14 +1,15 @@
 //
 // Created by xc on 19-6-3.
 //
-#include "../include/tracks.h"
+#include "tracks.h"
 
 namespace FeatureGraph
 {
 
 void delete_track_clean(std::vector<bool> &delete_track,TrackList &track);
 
-void tracks::unify_track(int view1_track_id,int view2_track_id, FeatureGraph::TrackList &trackAll,
+void 
+tracks::unify_track(int view1_track_id,int view2_track_id, FeatureGraph::TrackList &trackAll,
                          FeatureGraph::ViewList &viewports) {
 
     //将track特征数量少的，融合到track特征数量多的
@@ -39,7 +40,8 @@ void tracks::unify_track(int view1_track_id,int view2_track_id, FeatureGraph::Tr
 }
 
 
-void tracks::computeTracks(const std::vector<FeatureGraph::pairImg> matching, FeatureGraph::ViewList &Views,
+void 
+tracks::computeTracks(const std::vector<FeatureGraph::pairImg> matching, FeatureGraph::ViewList &Views,
                            FeatureGraph::TrackList &pointTracks) {
 
 
@@ -82,7 +84,7 @@ void tracks::computeTracks(const std::vector<FeatureGraph::pairImg> matching, Fe
             }
             else if(view1_track_id!=-1 && view2_track_id ==-1)
             {
-                view2.keyPoitsTrack[pairwise.matches[j].queryIdx].class_id=view1_track_id;
+                view2.keyPoitsTrack[pairwise.matches[j].trainIdx].class_id=view1_track_id;
                 pointTracks[view1_track_id].featureTrack.push_back(FeatureIdOfView(pairwise.imgId2,pairwise.matches[j].trainIdx));
 
             }
@@ -103,7 +105,8 @@ void tracks::computeTracks(const std::vector<FeatureGraph::pairImg> matching, Fe
 
 }
 
-void tracks::invalid_track_remove(FeatureGraph::ViewList Views, FeatureGraph::TrackList &pointTracks) {
+void 
+tracks::invalid_track_remove(FeatureGraph::ViewList Views, FeatureGraph::TrackList &pointTracks) {
 
 
     std::vector<bool> delete_tracks(pointTracks.size());
@@ -118,6 +121,7 @@ void tracks::invalid_track_remove(FeatureGraph::ViewList Views, FeatureGraph::Tr
 
         std::set<int> view_ids;
 
+        //一条track里有同一图像里的不同特征点，则删除该track
         for(size_t j=0;j<pointTracks[i].featureTrack.size();++j)
         {
             FeatureIdOfView  const& ref=pointTracks[i].featureTrack[j];
@@ -160,7 +164,7 @@ void tracks::invalid_track_remove(FeatureGraph::ViewList Views, FeatureGraph::Tr
     {
         Track & trackColor=pointTracks[i];
         int numFeature=0;
-        Eigen::Vector3i color(0,0,0);
+        cv::Vec3b color(0,0,0);
         for(int j=0;j<trackColor.featureTrack.size();++j)
         {
             FeatureIdOfViewList &ref=trackColor.featureTrack;
@@ -171,16 +175,17 @@ void tracks::invalid_track_remove(FeatureGraph::ViewList Views, FeatureGraph::Tr
             int col=viewColor.keyPoitsTrack[ref[j].feature_id_].pt.x;
 
             //TODO:这一部分的类型可能存在问题！！！！！
-            color+=Eigen::Vector3i(viewColor.img.at<cv::Vec3b>(row,col)[0],viewColor.img.at<cv::Vec3b>(row,col)[1],viewColor.img.at<cv::Vec3b>(row,col)[2]);
+            color+=cv::Vec3b(viewColor.img.at<cv::Vec3b>(row,col)[0],viewColor.img.at<cv::Vec3b>(row,col)[1],viewColor.img.at<cv::Vec3b>(row,col)[2]);
             numFeature++;
         }
-        trackColor.color= static_cast<Eigen::Vector3i>(color/numFeature);
+        trackColor.color= static_cast<cv::Vec3b>(color/numFeature);
     }
 
 }
 
 
-void delete_track_clean(std::vector<bool> &delete_track,TrackList &track)
+void 
+delete_track_clean(std::vector<bool> &delete_track,TrackList &track)
 {
     std::vector<Track>::iterator vr=track.begin();
     std::vector<Track>::iterator vw=track.begin();
@@ -201,5 +206,7 @@ void delete_track_clean(std::vector<bool> &delete_track,TrackList &track)
     }
     track.erase(vw,track.end());
 }
+
+
 
 }

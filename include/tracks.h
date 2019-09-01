@@ -8,7 +8,7 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include <Eigen/Core>
-#include "../include/Image.h"
+#include "Image.h"
 
 namespace FeatureGraph{
 
@@ -44,10 +44,16 @@ namespace FeatureGraph{
     struct Track{
 
         //每条track对应的世界坐标点
-        Eigen::Vector3f pos;
+        cv::Vec3f pos;
 
         //每条tack对应世界坐标点的颜色
-        Eigen::Vector3i color;
+        cv::Vec3b color;
+
+        //判断该track是否已经注册
+        bool is_register=false;
+
+        //map已经注册的3d的索引
+        int p3d_idx=std::numeric_limits<int>::max();
 
         //没每条track包含的图像和图像上对应的特征点
         FeatureIdOfViewList featureTrack;
@@ -77,3 +83,4 @@ namespace FeatureGraph{
 
 
 #endif //FEATURE_TRACKS_H
+
